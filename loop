@@ -1,0 +1,10 @@
+import inspect
+from sklearn import preprocessing
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, L_train, L_test = train_test_split(X, L, test_size = 0.5, random_state = 7)
+
+def prep(X_train, X_test, L_train, L_test):
+    for preprocess in [j for i,j in getmembers(preprocessing,isclass)]:
+        if preprocess.__module__  == 'sklearn.preprocessing.data':
+            prep = preprocess().fit(X_train,L_train)
