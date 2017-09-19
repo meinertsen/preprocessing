@@ -1,10 +1,16 @@
-import inspect
-from sklearn import preprocessing
+from inspect import getmembers, isclass
 
 from sklearn.model_selection import train_test_split
 X_train, X_test, L_train, L_test = train_test_split(X, L, test_size = 0.5, random_state = 7)
 
 def prep(X_train, X_test, L_train, L_test):
-    for preprocess in [j for i,j in getmembers(preprocessing,isclass)]:
+    from scipy import sparse
+    from sklearn import preprocessing
+    for ppname,preprocess in [(i,j) for i,j in getmembers(preprocessing,isclass)]:
         if preprocess.__module__  == 'sklearn.preprocessing.data':
-            prep = preprocess().fit(X_train,L_train)
+            prep = preprocess().fit(X_train)
+            X_train_prep = prep.transform(X_train)
+            X_test_prep = prep.transform(X_test)
+                if not sparse.issparse(X_train_prep):
+                    # do something
+                    # Dim redux (PCA, manifold)
